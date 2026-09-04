@@ -6,7 +6,7 @@ PAS is a sampling-stage method for 3D industrial anomaly detection. It leverages
 
 ## Framework
 
-![PAS Framework](figures/pipeline.png)
+![PAS Framework](figures/pas_framework.png)
 
 ## Codebase
 
