@@ -4,7 +4,7 @@
 
 Official implementation of **PAS**, a prior-guided adaptive sampling method for 3D industrial anomaly detection.
 
-PAS is designed as a **sampling-stage module** rather than a standalone anomaly detection pipeline. It derives a 2D anomaly prior from cross-model feature deviation and uses it to adaptively redistribute sampling centers toward potentially anomalous regions while preserving geometric coverage. The resulting sampling information is further incorporated into 3D anomaly scoring through coverage-aware calibration.
+PAS is designed as a **sampling-stage module** rather than a standalone anomaly detection pipeline. It derives a 2D anomaly prior from cross-model feature deviation and uses it to adaptively redistribute sampling centers toward potentially anomalous regions while preserving geometric coverage. The resulting sampling information is further incorporated into 3D anomaly scoring through Density-aware score calibration.
 
 ---
 
@@ -43,7 +43,7 @@ PAS mainly consists of three modules:
 - **Sampling-stage design** — PAS can be integrated into an existing 3D anomaly detection pipeline without replacing the complete detector.
 - **Prior-guided center allocation** — 2D anomaly evidence is used to redistribute the limited sampling budget toward potentially abnormal regions.
 - **Geometry preservation** — anomaly-guided sampling is combined with geometric exploration to avoid excessive concentration of centers.
-- **Coverage-aware scoring** — sampling information is explicitly introduced into the subsequent 3D anomaly scoring stage.
+- **Density-aware score calibration** — sampling information is explicitly introduced into the subsequent 3D anomaly scoring stage.
 - **Multiple datasets** — experiments are provided for MVTec 3D-AD, Eyecandies, and Real-IAD D3.
 - **Extensive analysis** — the repository contains scripts for sampling comparisons, component ablation, cross-backbone evaluation, budget analysis, defect-size analysis, sensitivity studies, and efficiency evaluation.
 
@@ -165,9 +165,8 @@ PAS/
 
 ## Environment
 
-### Basic requirements
-
-The experiments are intended to run in a Linux environment with an NVIDIA GPU.
+The complete PAS experimental pipeline is intended to run on Linux with an
+NVIDIA GPU and CUDA.
 
 A typical environment includes:
 
@@ -177,26 +176,31 @@ PyTorch
 CUDA
 ```
 
-Install the Python dependencies with:
+Install the basic dependencies with:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### CUDA extensions
+### CUDA Dependencies
 
-Some parts of the original M3DM/Point-MAE/PointNet++ pipeline require CUDA-based operators, including:
+Some components inherited from the M3DM/Point-MAE pipeline depend on
+CUDA-based operators, including:
 
 ```text
 knn_cuda
 pointnet2_ops
 ```
 
-Therefore, a CUDA-enabled environment is required for the complete experimental pipeline.
+Therefore, a CUDA-enabled PyTorch environment is required for running the
+complete experimental pipeline.
 
-The exact versions of CUDA extensions should be selected according to the installed PyTorch and CUDA versions.
+A CPU-only environment can still be used for code inspection, repository
+management, and static analysis, but the complete PAS pipeline is not expected
+to execute without CUDA.
 
-> Note: importing the complete M3DM pipeline in a CPU-only environment may fail because some CUDA extensions check GPU availability during import.
+PointNet++ experiments may additionally require the corresponding compiled
+PointNet++ CUDA operators.
 
 ---
 
@@ -273,26 +277,70 @@ datasets/Real-IAD-D3
 
 ## Pretrained Models
 
-The complete PAS pipeline uses pretrained visual and point-cloud backbones.
+PAS uses pretrained RGB and point-cloud encoders inherited from the
+M3DM-based feature extraction pipeline.
 
-Depending on the experiment, the following checkpoints may be required:
+The main pretrained checkpoints required by the PAS experiments are:
 
 ```text
 checkpoints/
 ├── dinov2_vitb14_pretrain.safetensors
-├── pointmae_pretrain.pth
-└── ...
+└── pointmae_pretrain.pth
 ```
 
-The pretrained checkpoints are **not redistributed** in this repository.
+### DINOv2
 
-Please obtain the corresponding weights from the official pretrained-model sources and place them under the `checkpoints/` directory using the filenames expected by the selected experiment.
+DINOv2 ViT-B/14 is used as the RGB feature extractor.
 
-The principal pretrained components include:
+The implementation looks for:
 
-- **DINOv2** for RGB feature extraction
-- **Point-MAE** for point-cloud feature extraction
-- optional PointNet++-based backbones for cross-backbone experiments
+```text
+checkpoints/dinov2_vitb14_pretrain.safetensors
+```
+
+and also supports:
+
+```text
+checkpoints/dinov2_vitb14_pretrain.pth
+```
+
+Please obtain the corresponding pretrained DINOv2 weights from the official
+DINOv2 project and place them under `checkpoints/`.
+
+### Point-MAE
+
+Point-MAE is used as the pretrained point-cloud feature extractor.
+
+The expected checkpoint path is:
+
+```text
+checkpoints/pointmae_pretrain.pth
+```
+
+Please obtain the pretrained Point-MAE weights from the official Point-MAE
+project and place them at the path above.
+
+> Pretrained weights are not redistributed in this repository. Please obtain
+> them from their respective official sources and follow the corresponding
+> licenses.
+
+### Note on the M3DM Base Entry
+
+The inherited `main.py` retains the original M3DM argument:
+
+```text
+--fusion_module_path
+```
+
+with a legacy default path of:
+
+```text
+checkpoints/checkpoint-0.pth
+```
+
+This checkpoint is not required by the PAS paper reproduction scripts
+provided in this repository. The recommended PAS experiments should be run
+through the corresponding `benchmark_*.py` scripts.
 
 ---
 
