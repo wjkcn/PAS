@@ -4,7 +4,7 @@
 
 Official implementation of **PAS**, a prior-guided adaptive sampling method for 3D industrial anomaly detection.
 
-PAS is designed as a **sampling-stage module** rather than a standalone anomaly detection pipeline. It uses a 2D anomaly prior to adaptively redistribute sampling centers toward potentially anomalous regions while preserving geometric coverage. The resulting sampling information is further incorporated into 3D anomaly scoring through coverage-aware calibration.
+PAS is designed as a **sampling-stage module** rather than a standalone anomaly detection pipeline. It derives a 2D anomaly prior from cross-model feature deviation and uses it to adaptively redistribute sampling centers toward potentially anomalous regions while preserving geometric coverage. The resulting sampling information is further incorporated into 3D anomaly scoring through coverage-aware calibration.
 
 ---
 
@@ -18,15 +18,23 @@ PAS is designed as a **sampling-stage module** rather than a standalone anomaly 
   <b>Overview of the proposed PAS framework.</b>
 </p>
 
-PAS mainly consists of two complementary components:
+PAS mainly consists of three modules:
 
-1. **Prior-guided adaptive sampling**  
-   A 2D anomaly prior is projected to the point domain and used to guide center allocation. PAS balances anomaly-oriented sampling with geometric exploration instead of relying exclusively on conventional farthest point sampling.
+1. **Cross-model feature deviation prior**  
+   PAS extracts a 2D anomaly prior from cross-model feature deviation and
+   projects the resulting anomaly evidence from the image domain to the
+   corresponding 3D points.
 
-2. **Coverage-aware calibration**  
-   Sampling coverage information is incorporated into the point-level anomaly scoring process, allowing the detector to benefit from the changed center distribution rather than treating adaptive sampling as an isolated preprocessing operation.
+2. **Defect-preserving hybrid sampling**  
+   The projected prior guides the allocation of sampling centers toward
+   potentially anomalous regions, while geometric exploration is retained
+   to preserve global point-cloud coverage and avoid excessive sampling
+   concentration.
 
-The method is implemented on top of an M3DM-based multimodal anomaly detection pipeline.
+3. **Density-aware score calibration**  
+   Local center coverage is estimated after sampling and incorporated into
+   point-level anomaly scoring, compensating for the non-uniform center
+   distribution introduced by prior-guided sampling.
 
 ---
 
