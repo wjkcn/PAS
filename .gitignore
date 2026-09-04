@@ -1,0 +1,57 @@
+# Datasets
+datasets/
+data/
+
+# Model weights
+checkpoints/
+memory_banks/
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+
+# Experiment outputs
+results/
+results_*/
+outputs/
+runs/
+
+# Visualization temporary outputs
+vis_case/
+vis_case_*/
+vis_realiad/
+vis_rendered/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Environments
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs / temporary
+*.log
+*.tmp
+*.save
+
+# Internal documents
+PAPER_DRAFT*
+PAPER_OUTLINE*
+WORK_LOG.md
+OPENSOURCE_PLAN.md
+
+# Secrets
+*.pem
+id_rsa
+id_ed25519
+:USERPROFILE*
