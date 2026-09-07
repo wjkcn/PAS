@@ -4,7 +4,7 @@
 
 Official implementation of **PAS**, a prior-guided adaptive sampling method for 3D industrial anomaly detection.
 
-PAS is designed as a **sampling-stage module** rather than a standalone anomaly detection pipeline. It derives a 2D anomaly prior from cross-model feature deviation and uses it to adaptively redistribute sampling centers toward potentially anomalous regions while preserving geometric coverage. The resulting sampling information is further incorporated into 3D anomaly scoring through Density-aware score calibration.
+PAS is designed as a **sampling-stage module** rather than a standalone anomaly detection pipeline. It derives a 2D anomaly prior from cross-modal feature deviation and uses it to adaptively redistribute sampling centers toward potentially anomalous regions while preserving geometric coverage. The resulting sampling information is further incorporated into 3D anomaly scoring through Coverage-aware Score Calibration.
 
 ---
 
@@ -20,8 +20,8 @@ PAS is designed as a **sampling-stage module** rather than a standalone anomaly 
 
 PAS mainly consists of three modules:
 
-1. **Cross-model feature deviation prior**  
-   PAS extracts a 2D anomaly prior from cross-model feature deviation and
+1. **Cross-modal Feature Deviation Prior**  
+   PAS extracts a 2D anomaly prior from cross-modal feature deviation and
    projects the resulting anomaly evidence from the image domain to the
    corresponding 3D points.
 
@@ -31,7 +31,7 @@ PAS mainly consists of three modules:
    to preserve global point-cloud coverage and avoid excessive sampling
    concentration.
 
-3. **Density-aware score calibration**  
+3. **Coverage-aware Score Calibration**  
    Local center coverage is estimated after sampling and incorporated into
    point-level anomaly scoring, compensating for the non-uniform center
    distribution introduced by prior-guided sampling.
@@ -43,7 +43,7 @@ PAS mainly consists of three modules:
 - **Sampling-stage design** — PAS can be integrated into an existing 3D anomaly detection pipeline without replacing the complete detector.
 - **Prior-guided center allocation** — 2D anomaly evidence is used to redistribute the limited sampling budget toward potentially abnormal regions.
 - **Geometry preservation** — anomaly-guided sampling is combined with geometric exploration to avoid excessive concentration of centers.
-- **Density-aware score calibration** — sampling information is explicitly introduced into the subsequent 3D anomaly scoring stage.
+- **Coverage-aware Score Calibration** — sampling information is explicitly introduced into the subsequent 3D anomaly scoring stage.
 - **Multiple datasets** — experiments are provided for MVTec 3D-AD, Eyecandies, and Real-IAD D3.
 - **Extensive analysis** — the repository contains scripts for sampling comparisons, component ablation, cross-backbone evaluation, budget analysis, defect-size analysis, sensitivity studies, and efficiency evaluation.
 
